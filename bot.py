@@ -18,6 +18,7 @@ AZURE_OPENAI_API_KEY = os.getenv("AZURE_OPENAI_API_KEY", "your_azure_api_key_her
 AZURE_OPENAI_ENDPOINT = os.getenv("AZURE_OPENAI_ENDPOINT", "https://your-resource.openai.azure.com/")
 AZURE_OPENAI_DEPLOYMENT = os.getenv("AZURE_OPENAI_DEPLOYMENT", "gpt-4")
 AZURE_OPENAI_API_VERSION = os.getenv("AZURE_OPENAI_API_VERSION", "2024-08-01-preview")
+KURT_LINKEDIN_URL = os.getenv("KURT_LINKEDIN_URL", "https://linkedin.com/in/kurtniemi")
 
 app = Flask(__name__)
 
@@ -31,6 +32,11 @@ openai_client = AzureOpenAI(
 # Store recent chat messages for context (last 20 messages per meeting)
 # Format: {bot_id: [(participant_name, message_text, timestamp), ...]}
 recent_messages = {}
+
+# Store ALL chat messages for saving at meeting end
+# Format: {bot_id: {'public': [(participant_name, message_text, timestamp), ...],
+#                   'dms': [(participant_name, participant_id, message_text, timestamp), ...]}}
+all_messages = {}
 
 # Fun bot personality prompt
 BOT_SYSTEM_PROMPT = """You are Kurt's Clone - a witty AI copy of Kurt Niemi who joined the meeting.
@@ -232,6 +238,139 @@ Provide a thoughtful, contextual response:"""
         return "Sorry, I'm having trouble processing that right now. 🤖"
 
 
+def extract_social_urls(text):
+    """
+    Extract social media URLs from text
+    Returns list of (platform, url) tuples
+    """
+    import re
+
+    social_patterns = {
+        'LinkedIn': r'https?://(?:www\.)?linkedin\.com/[\w\-/]+',
+        'Twitter/X': r'https?://(?:www\.)?(?:twitter\.com|x\.com)/[\w\-/]+',
+        'Facebook': r'https?://(?:www\.)?facebook\.com/[\w\-/]+',
+        'Instagram': r'https?://(?:www\.)?instagram\.com/[\w\-/]+',
+        'GitHub': r'https?://(?:www\.)?github\.com/[\w\-/]+',
+        'YouTube': r'https?://(?:www\.)?youtube\.com/[\w\-/?=]+',
+        'TikTok': r'https?://(?:www\.)?tiktok\.com/@?[\w\-/]+',
+        'Website': r'https?://(?:www\.)?[\w\-]+\.[\w\-./]+',  # Generic URL
+    }
+
+    found_urls = []
+    for platform, pattern in social_patterns.items():
+        matches = re.findall(pattern, text, re.IGNORECASE)
+        for match in matches:
+            found_urls.append((platform, match))
+
+    # Remove duplicates while preserving order
+    seen = set()
+    unique_urls = []
+    for platform, url in found_urls:
+        if url not in seen:
+            seen.add(url)
+            unique_urls.append((platform, url))
+
+    return unique_urls
+
+
+def save_messages_to_file(bot_id, recording_id=None):
+    """
+    Save all chat messages (public and DMs) to a file when meeting ends
+
+    Args:
+        bot_id: The bot ID
+        recording_id: Optional recording ID for filename
+    """
+    import json
+    from datetime import datetime
+
+    if bot_id not in all_messages:
+        print(f"⚠️ No messages found for bot {bot_id}")
+        return
+
+    messages = all_messages[bot_id]
+
+    # Build the output structure
+    output = {
+        'meeting_info': {
+            'bot_id': bot_id,
+            'recording_id': recording_id,
+            'saved_at': datetime.now().isoformat()
+        },
+        'public_messages': [],
+        'direct_messages': [],
+        'social_profiles': []
+    }
+
+    # Format public messages
+    for participant_name, message_text, timestamp in messages['public']:
+        msg_data = {
+            'participant': participant_name,
+            'message': message_text,
+            'timestamp': timestamp.isoformat()
+        }
+
+        # Check for social URLs
+        social_urls = extract_social_urls(message_text)
+        if social_urls:
+            msg_data['social_urls'] = [{'platform': platform, 'url': url} for platform, url in social_urls]
+            # Also add to master social profiles list
+            for platform, url in social_urls:
+                output['social_profiles'].append({
+                    'participant': participant_name,
+                    'platform': platform,
+                    'url': url,
+                    'from_message': message_text[:100]  # First 100 chars for context
+                })
+
+        output['public_messages'].append(msg_data)
+
+    # Format DMs
+    for participant_name, participant_id, message_text, timestamp in messages['dms']:
+        msg_data = {
+            'participant': participant_name,
+            'participant_id': participant_id,
+            'message': message_text,
+            'timestamp': timestamp.isoformat()
+        }
+
+        # Check for social URLs in DMs too
+        social_urls = extract_social_urls(message_text)
+        if social_urls:
+            msg_data['social_urls'] = [{'platform': platform, 'url': url} for platform, url in social_urls]
+            # Also add to master social profiles list
+            for platform, url in social_urls:
+                output['social_profiles'].append({
+                    'participant': participant_name,
+                    'platform': platform,
+                    'url': url,
+                    'from_message': message_text[:100],
+                    'from_dm': True
+                })
+
+        output['direct_messages'].append(msg_data)
+
+    # Generate filename
+    if recording_id:
+        filename = f"chat_messages_{recording_id}.json"
+    else:
+        filename = f"chat_messages_{bot_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+
+    # Save to file
+    try:
+        with open(filename, 'w', encoding='utf-8') as f:
+            json.dump(output, f, indent=2, ensure_ascii=False)
+
+        print(f"💾 Saved {len(output['public_messages'])} public messages and {len(output['direct_messages'])} DMs to {filename}")
+        if output['social_profiles']:
+            print(f"🔗 Found {len(output['social_profiles'])} social profile URLs")
+
+        return filename
+    except Exception as e:
+        print(f"❌ Error saving messages to file: {e}")
+        return None
+
+
 @app.route('/webhook/recall', methods=['POST'])
 def handle_webhook():
     """
@@ -306,17 +445,30 @@ def handle_webhook():
             if bot_id and bot_id not in recent_messages:
                 recent_messages[bot_id] = []
 
+            # Initialize all_messages storage for this bot if needed
+            if bot_id and bot_id not in all_messages:
+                all_messages[bot_id] = {'public': [], 'dms': []}
+
             # Store public messages for context (keep last 20)
             if not is_dm and bot_id:
                 from datetime import datetime
-                recent_messages[bot_id].append((participant_name, message_text, datetime.now()))
+                timestamp = datetime.now()
+                recent_messages[bot_id].append((participant_name, message_text, timestamp))
                 # Keep only last 20 messages
                 if len(recent_messages[bot_id]) > 20:
                     recent_messages[bot_id] = recent_messages[bot_id][-20:]
 
+                # Also store in all_messages (keep all public messages for file export)
+                all_messages[bot_id]['public'].append((participant_name, message_text, timestamp))
+
             # Handle DMs with LLM-powered fun responses
             if is_dm:
                 print(f"🎯 Processing DM from {participant_name}...")
+
+                # Store DM in all_messages (keep all DMs for file export)
+                from datetime import datetime
+                timestamp = datetime.now()
+                all_messages[bot_id]['dms'].append((participant_name, participant_id, message_text, timestamp))
 
                 # Get moderated response
                 ai_response = moderate_and_respond(message_text, participant_name)
@@ -325,8 +477,10 @@ def handle_webhook():
                 send_chat_message(bot_id, participant_id, ai_response)
                 print(f"🤖 Sent fun response to {participant_name}")
 
-            # Handle public chat mentions
-            elif 'kurt' in message_text.lower() or '@kurtbot' in message_text.lower():
+            # Handle public chat mentions (including Kurt's LinkedIn URL)
+            elif ('kurt' in message_text.lower() or
+                  '@kurtbot' in message_text.lower() or
+                  KURT_LINKEDIN_URL.lower() in message_text.lower()):
                 # Check if this is an opinion/analysis request
                 if is_opinion_request(message_text):
                     print(f"🎯 Processing contextual opinion request from {participant_name}...")
@@ -375,9 +529,14 @@ def handle_webhook():
             print(f"🤖 Bot status changed to: {status}")
             # Note: Greeting is sent via on_bot_joined config in recall_api.py
 
-            # When bot leaves, create async transcript
+            # When bot leaves, create async transcript and save chat messages
             if status == 'done':
                 recording_id = data['data'].get('recording_id')
+
+                # Save all chat messages to file
+                if bot_id:
+                    save_messages_to_file(bot_id, recording_id)
+
                 if recording_id:
                     print(f"📝 Meeting ended. Creating async transcript for recording {recording_id}")
                     time.sleep(5)  # Wait a bit for recording to finalize
@@ -393,10 +552,18 @@ def handle_webhook():
                            data.get('data', {}).get('recording_id'))
             print(f"👋 Bot left the call. Recording ID: {recording_id}")
 
-            # Clean up message buffer for this bot
+            # Save all chat messages to file before cleanup
+            if bot_id:
+                save_messages_to_file(bot_id, recording_id)
+
+            # Clean up message buffers for this bot
             if bot_id and bot_id in recent_messages:
                 del recent_messages[bot_id]
-                print(f"🧹 Cleaned up message buffer for bot {bot_id}")
+                print(f"🧹 Cleaned up recent_messages buffer for bot {bot_id}")
+
+            if bot_id and bot_id in all_messages:
+                del all_messages[bot_id]
+                print(f"🧹 Cleaned up all_messages buffer for bot {bot_id}")
 
             if recording_id:
                 print(f"📝 Meeting ended. Creating async transcript for recording {recording_id}")
