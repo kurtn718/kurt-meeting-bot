@@ -1,0 +1,8 @@
+[phases.setup]
+nixPkgs = ["python312", "poetry"]
+
+[phases.install]
+cmds = ["poetry install --no-dev --no-interaction --no-ansi"]
+
+[start]
+cmd = "poetry run python bot.py"

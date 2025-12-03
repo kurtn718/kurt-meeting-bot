@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "kurt-meeting-bot"
+version = "0.1.0"
+description = "Meeting bot with Azure OpenAI"
+authors = ["Kurt Niemi <kurtn@lll-solutions.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+openai = "^2.8.1"
+flask = "^3.1.2"
+requests = "^2.32.5"
+python-dotenv = "^1.2.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

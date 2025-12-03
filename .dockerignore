@@ -1,0 +1,11 @@
+README.md
+.git
+.gitignore
+.env.example
+*.pyc
+__pycache__
+.pytest_cache
+.vscode
+.idea
+*.swp
+transcript_*.json
