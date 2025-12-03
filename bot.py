@@ -362,25 +362,18 @@ def handle_webhook():
             bot_id = (data.get('data', {}).get('bot', {}).get('id') or data.get('bot_id'))
             print(f"🎥 Bot is in call and recording! (bot_id: {bot_id})")
 
-        # Handle bot in call but not recording (send greeting here)
+        # Handle bot in call but not recording
         elif event == 'bot.in_call_not_recording':
             bot_id = (data.get('data', {}).get('bot', {}).get('id') or data.get('bot_id'))
-            print(f"🤖 Bot is in call (not recording) - Sending greeting! (bot_id: {bot_id})")
-            # Send greeting when bot enters the call (backup - on_bot_joined should handle this)
-            if bot_id:
-                send_chat_message(bot_id, "everyone", "👋 Kurt's Clone here! I'm the upgraded version. Mention 'Kurt' or '@kurtbot' in chat to talk to me, or DM me anytime! Ask me 'how were you created?' to learn my origin story. 😎")
-            else:
-                print(f"⚠️ Cannot send greeting - bot_id is None!")
+            print(f"🤖 Bot is in call (not recording) (bot_id: {bot_id})")
+            # Note: Greeting is sent via on_bot_joined config in recall_api.py
 
         # Handle bot status changes (legacy event type)
         elif event == 'bot.status_change':
             bot_id = data.get('bot_id')
             status = data['data'].get('code')
             print(f"🤖 Bot status changed to: {status}")
-
-            # When bot joins, send a greeting (backup to on_bot_joined config)
-            if status == 'in_waiting_room' or status == 'in_call_not_recording':
-                send_chat_message(bot_id, "everyone", "👋 Kurt's Clone here! I'm the upgraded version. Mention 'Kurt' or '@kurtbot' in chat to talk to me, or DM me anytime! Ask me 'how were you created?' to learn my origin story. 😎")
+            # Note: Greeting is sent via on_bot_joined config in recall_api.py
 
             # When bot leaves, create async transcript
             if status == 'done':
