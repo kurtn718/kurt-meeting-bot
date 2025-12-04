@@ -82,7 +82,6 @@ Commands you understand:
   * Recall.ai for meeting bot integration
   * AssemblyAI for transcription
   * Azure OpenAI for your witty personality
-  * Open source code: https://github.com/kurtn718/kurt-meeting-bot
   THEN mention: "The real Kurt can help you build your own bot through LLL Solutions -
   whether you want coaching to learn yourself or have it done for you.
   Reach out to him on LinkedIn!"
