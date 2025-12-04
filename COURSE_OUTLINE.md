@@ -1,246 +1,308 @@
-# AI Meeting Bot Course: Professional Vibe Coding
-## Build Your Own AI Meeting Assistant - For Non-Technical People
+# AI Meeting Bot Courses: Professional Vibe Coding
+## Build Your Own AI Meeting Assistant - Two Course Series
 
 **Instructor:** Kurt Niemi | 30 Years Software Development Experience
-**Platform:** Maven (pending sufficient interest)
+**Platform:** Maven
 **Target Audience:** Non-technical professionals who want to build AI-powered meeting bots
 
 ---
 
-## Course Overview
+# COURSE 1: Build Your Bot with Lovable
+## Zero to Deployed in One Session
 
-Learn to build production-ready AI meeting bots using **professional vibe coding** - a methodology that combines AI-assisted development tools with battle-tested software engineering principles. No prior coding experience required.
+### 🎉 LAUNCH SPECIAL: $5 for the First 20 Students!
 
-### What is Professional Vibe Coding?
-
-"Vibe coding" means using AI tools (like Cursor, GitHub Copilot, Claude) to write code through natural language conversations. **Professional** vibe coding adds:
-- Architectural thinking before coding
-- Understanding what the AI generates (not just copy-paste)
-- Production deployment best practices
-- Security and error handling awareness
-- Real-world debugging skills
+**Duration:** 2-3 hours (single session workshop)
+**Format:** Live workshop + recording access
+**Skill Level:** Complete beginner friendly
 
 ---
 
-## Course Duration Options
+### What You'll Accomplish
 
-### Option A: Intensive Weekend Workshop (2 days)
-- **Day 1:** Foundations, setup, basic bot (8 hours)
-- **Day 2:** AI integration, deployment, customization (8 hours)
-- **Best for:** People who want to move fast and have dedicated time
+In just one session, you'll have a **fully functional AI meeting bot** deployed and ready to join your Zoom/Teams/Google Meet calls. No coding experience required.
 
-### Option B: Part-Time Course (4 weeks)
-- **2 sessions per week, 2 hours each** (16 hours total)
-- Homework assignments between sessions
-- **Best for:** Working professionals who need flexibility
+### Course Outline
 
-### Option C: Self-Paced with Office Hours (6 weeks)
-- Pre-recorded modules + weekly 1-hour live Q&A
-- **Best for:** People with unpredictable schedules
+#### Part 1: Setup & Concepts (30 min)
+- What AI meeting bots can do
+- Quick tour of the tech stack (Recall.ai, OpenAI, Lovable)
+- Creating your free accounts
 
----
+#### Part 2: Build Your Bot on Lovable (60 min)
+- Using Lovable's AI-powered app builder
+- Customizing your bot's personality
+- Configuring meeting integrations
+- One-click deployment
 
-## Course Curriculum
+#### Part 3: Test & Customize (30 min)
+- Inviting your bot to a test meeting
+- Live Q&A and troubleshooting
+- Ideas for customization
 
-### Module 1: Foundations (Week 1)
-**"Understanding Before Building"**
-
-- What AI meeting bots can do (and their limitations)
-- Tour of the technology stack (no code yet, just concepts):
-  - Recall.ai - Meeting integration platform
-  - AssemblyAI - Transcription services
-  - Azure OpenAI / OpenAI - AI conversation engine
-  - Flask - Simple web server framework
-- Setting up your development environment
-- Introduction to professional vibe coding with Cursor/Copilot
-
-**Hands-on:** Set up accounts, install tools, run your first "Hello World"
+#### Part 4: Next Steps (15 min)
+- Running costs and what to expect
+- When to consider Course 2 (Pro Deployment)
+- LLL Solutions coaching/done-for-you options
 
 ---
 
-### Module 2: Your First Bot (Week 2)
-**"From Zero to Zoom"**
+### What You'll Have at the End
 
-- Understanding webhooks (how services talk to each other)
-- Creating a bot that joins meetings
-- Sending your first automated message
-- Reading and understanding the code the AI writes for you
-
-**Hands-on:** Deploy a basic bot that joins a meeting and says hello
+✅ A working AI meeting bot with your custom personality
+✅ Bot deployed on Lovable (hosted for you)
+✅ Ability to invite your bot to any meeting
+✅ Recording of the session to reference later
 
 ---
 
-### Module 3: Adding AI Personality (Week 3)
-**"Making Your Bot Smart and Fun"**
+### Pricing
 
-- Prompt engineering fundamentals
-- Creating a bot personality
-- Handling different types of messages (DMs vs public chat)
-- Safety considerations and content moderation
-- Multi-language support
+| Offer | Price | Notes |
+|-------|-------|-------|
+| **Launch Special** | **$5** | First 20 students only! |
+| Regular Price | $47 | After launch special ends |
 
-**Hands-on:** Customize your bot's personality and responses
+> **Why $5?** Kurt wants to help as many people as possible build their first AI bot. This is a "get started" price to remove all barriers. If you get value, you'll tell others!
 
 ---
 
-### Module 4: Production Deployment (Week 4)
-**"Going Live"**
+### Who This Is For
 
-- Deploying to Railway (simple cloud hosting)
+- ✅ Complete beginners (never coded before)
+- ✅ Busy professionals who want quick results
+- ✅ Anyone curious about AI meeting bots
+- ✅ People who want to test the concept before going deeper
+
+### Who Should Skip to Course 2
+
+- Developers who want full control
+- People who need enterprise-grade deployments
+- Those who want to avoid ongoing Lovable costs
+
+---
+
+# COURSE 2: Pro Deployment
+## Local Development to Enterprise Cloud
+
+**Duration:** 6-8 weeks (2 sessions/week, 2 hours each)
+**Format:** Live cohort + recordings + community
+**Skill Level:** Beginner-friendly with professional output
+**Prerequisites:** Course 1 OR basic comfort with computers
+
+---
+
+### What You'll Learn
+
+Take your bot from Lovable's hosted environment to **full professional deployment** on major cloud platforms with proper CI/CD pipelines. Learn to develop locally using Claude Code - the most powerful (and cost-effective) AI coding tool available.
+
+---
+
+### Course Curriculum
+
+#### Module 1: Local Development Setup (Week 1)
+**"Your Professional Dev Environment"**
+
+- Why local development matters (cost, control, speed)
+- Installing Claude Code and understanding its value vs. other tools
+- Setting up Python, Poetry, and your local environment
+- Cloning and running the meeting bot locally
+- Introduction to professional vibe coding
+
+**Outcome:** Bot running on your machine, editable with Claude Code
+
+---
+
+#### Module 2: Understanding the Codebase (Week 2)
+**"Know What You're Building"**
+
+- Architecture walkthrough (Flask, webhooks, API integrations)
+- How Recall.ai, AssemblyAI, and OpenAI work together
+- Reading and modifying code with Claude Code
+- Adding custom features and commands
+- Testing locally with ngrok
+
+**Outcome:** Confidently modify and extend your bot
+
+---
+
+#### Module 3: Version Control & Collaboration (Week 3)
+**"Working Like a Pro"**
+
+- Git fundamentals (commits, branches, merges)
+- GitHub for code storage and collaboration
+- Code review basics
 - Environment variables and secrets management
-- Monitoring and debugging in production
-- Cost management and scaling considerations
 
-**Hands-on:** Deploy your bot to the cloud and invite it to a real meeting
+**Outcome:** Your bot code safely versioned on GitHub
 
 ---
 
-### Module 5: Advanced Features (Bonus Module)
-**"Level Up"**
+#### Module 4: Digital Ocean Deployment (Week 4)
+**"Your First Cloud Deployment"**
 
-- Real-time transcription integration
-- Social profile extraction and lead capture
-- Meeting analytics and summaries
-- Custom commands and integrations
+- Why Digital Ocean (simple, affordable, reliable)
+- Setting up a Droplet
+- Deploying your bot manually
+- Domain setup and SSL certificates
+- Monitoring and logs
+
+**Outcome:** Bot running on Digital Ocean
+
+---
+
+#### Module 5: CI/CD Fundamentals (Week 5)
+**"Automated Deployments"**
+
+- What is CI/CD and why it matters
+- GitHub Actions basics
+- Automated testing before deployment
+- Auto-deploy on push to main
+- Rollback strategies
+
+**Outcome:** Push code → automatically deploys
+
+---
+
+#### Module 6: AWS Deployment (Week 6)
+**"Enterprise Scale - Part 1"**
+
+- AWS overview (EC2, ECS, Lambda options)
+- Deploying to AWS with CI/CD
+- Cost optimization strategies
+- AWS-specific monitoring (CloudWatch)
+
+**Outcome:** Bot running on AWS with CI/CD
+
+---
+
+#### Module 7: Azure & Google Cloud (Week 7)
+**"Enterprise Scale - Part 2"**
+
+- Azure deployment (App Service, Container Instances)
+- Google Cloud deployment (Cloud Run, Compute Engine)
+- Multi-cloud strategies
+- Choosing the right platform for your needs
+
+**Outcome:** Ability to deploy to any major cloud
+
+---
+
+#### Module 8: Production Best Practices (Week 8)
+**"Running Like a Business"**
+
+- Security hardening
+- Scaling strategies
+- Cost monitoring and optimization
+- Backup and disaster recovery
 - Building a business around your bot
 
-**Hands-on:** Add at least one advanced feature to your bot
+**Outcome:** Production-ready, enterprise-grade deployment
 
 ---
 
-### Module 6: Zero-Infrastructure Option (Bonus Module)
-**"The Easy Button - Lovable Integration"**
-
-- Introduction to Lovable (AI-powered app builder)
-- Deploying your bot with zero DevOps knowledge
-- Using Kurt's hosted infrastructure (included with course)
-- One-click deployment and management dashboard
-- When to use hosted vs self-managed
-
-**Hands-on:** Deploy your bot using the hosted Lovable solution
-
-> **Course Perk:** Maven students get access to Kurt's hosted infrastructure, so you can run your bot without managing servers, Railway, or cloud accounts. Just customize your personality and go!
-
----
-
-## What You'll Build
-
-By the end of this course, you'll have a fully functional AI meeting bot that:
-
-1. Joins Zoom, Teams, or Google Meet meetings
-2. Responds intelligently to chat messages
-3. Has a custom personality you designed
-4. Captures and stores meeting data
-5. Runs 24/7 in the cloud
-6. Is ready to customize for your specific use case
-
----
-
-## Prerequisites
-
-- **Technical:** None! This course is designed for non-programmers
-- **Equipment:** A computer (Mac, Windows, or Linux)
-- **Accounts:** You'll create free accounts for various services (guided in Module 1)
-- **Mindset:** Curiosity and willingness to experiment
-
----
-
-## Competitive Analysis: Other AI Bot Courses
-
-### Maven Courses
-
-| Course | Price | Focus | Gap vs This Course |
-|--------|-------|-------|-------------------|
-| [AI Engineering Bootcamp](https://maven.com/aimakerspace/ai-eng-bootcamp) | ~$2,000+ | General AI engineering, RAG, agents | Requires coding experience, not meeting-bot specific |
-| [AI for Developers: Vibe Coding to Multi-Agent](https://maven.com/goman-ai/ai-for-developers-from-assistant-to-core) | $480 | General AI development | Developer-focused, not for non-technical people |
-| [AI Engineer Onramp](https://maven.com/aimakerspace/ai-eng-onramp) | ~$500 | Cursor, vibe coding basics | General purpose, no specific project output |
-
-### Udemy Courses
-
-| Course | Price | Focus | Gap vs This Course |
-|--------|-------|-------|-------------------|
-| [Build, Train & Sell AI Chatbots](https://www.udemy.com/course/ai-chatbots/) | ~$20-100 | No-code chatbots | Customer service focus, not meeting bots |
-| [AI Chatbot & Voice Bot Mastery](https://www.udemy.com/course/ai-chatbot-mastery-no-code-chatbots/) | ~$20-100 | Voiceflow, BotPress | Platform-specific, not custom development |
-| [Build AI Chatbots with VectorShift](https://www.udemy.com/course/build-ai-automation-agency-chatbots-genai-with-vectorshift/) | ~$20-100 | No-code SAAS apps | Locked into specific platform |
-
-### Coursera
-
-| Course | Price | Focus | Gap vs This Course |
-|--------|-------|-------|-------------------|
-| [IBM: Building AI Chatbots Without Programming](https://www.coursera.org/learn/building-ai-powered-chatbots) | $49/mo | IBM Watson chatbots | Enterprise-focused, no meeting integration |
-
-### Key Differentiators of This Course
-
-1. **Meeting-Bot Specific:** Only course focused specifically on AI meeting assistants
-2. **Professional Vibe Coding:** Teaches sustainable AI-assisted development, not just prompting
-3. **Production Ready:** You deploy a real, working bot, not just a demo
-4. **Non-Technical Friendly:** No prior coding experience required
-5. **Real-World Project:** Based on actual open-source production code
-6. **30 Years Experience:** Instructor brings professional software engineering rigor
-
----
-
-## Pricing Considerations
-
-Based on competitive analysis:
-- **Maven AI courses:** $500-$2,500
-- **Udemy courses:** $20-$100 (often heavily discounted)
-- **Coursera:** $49/month subscription
-
-### Suggested Pricing Tiers
+### Pricing
 
 | Tier | Price | Includes |
 |------|-------|----------|
-| **Self-Paced** | $297 | All modules, community access, hosted infrastructure |
-| **Live Cohort** | $497 | Live sessions, Q&A, feedback, hosted infrastructure |
-| **VIP** | $997 | 1:1 coaching calls, priority support, dedicated hosting |
+| **Self-Paced** | $297 | All modules, recordings, community access |
+| **Live Cohort** | $497 | Live sessions, Q&A, direct feedback |
+| **VIP** | $997 | 1:1 coaching calls, priority support, code review |
 
-> **Hosted Infrastructure Included:** All tiers include access to Kurt's managed hosting platform, so you don't need to set up Railway, manage servers, or worry about DevOps. Just customize your bot and deploy with one click via Lovable!
+> **Course 1 Alumni:** Get $50 off any Course 2 tier!
 
 ---
 
-## How to Show Interest
+### What You'll Have at the End
 
-If you're interested in this course:
+✅ Bot deployed to 3+ cloud platforms
+✅ Full CI/CD pipeline with automated deployments
+✅ Professional development workflow with Claude Code
+✅ Understanding of cloud costs and optimization
+✅ Skills transferable to any Python project
 
-1. **Message "bot course"** to Kurt's Clone bot in any meeting
-2. **Connect with Kurt on LinkedIn**
-3. **Star the GitHub repo:** https://github.com/kurtn718/kurt-meeting-bot
+---
 
-Once enough people express interest, Kurt will launch the course on Maven!
+## Course Comparison
+
+| Feature | Course 1: Lovable | Course 2: Pro Deployment |
+|---------|-------------------|--------------------------|
+| **Duration** | 2-3 hours | 6-8 weeks |
+| **Price** | $5 (launch) / $47 | $297-$997 |
+| **Coding Required** | None | Guided with Claude Code |
+| **Deployment** | Lovable hosted | DO, AWS, Azure, GCP |
+| **Ongoing Costs** | Lovable fees | Cloud provider fees |
+| **Best For** | Quick start, testing | Full control, enterprise |
+
+---
+
+## Competitive Analysis
+
+### Other AI/Bot Courses
+
+| Course | Price | Duration | Gap vs These Courses |
+|--------|-------|----------|---------------------|
+| [Maven AI Engineering Bootcamp](https://maven.com/aimakerspace/ai-eng-bootcamp) | ~$2,000+ | 8 weeks | General AI, not meeting-bot specific |
+| [AI for Developers: Vibe Coding](https://maven.com/goman-ai/ai-for-developers-from-assistant-to-core) | $480 | 4 weeks | Developer-focused, not for beginners |
+| [Udemy AI Chatbot Courses](https://www.udemy.com/course/ai-chatbots/) | $20-100 | Self-paced | Platform-locked, no cloud deployment |
+| [IBM Chatbot Course](https://www.coursera.org/learn/building-ai-powered-chatbots) | $49/mo | 6 weeks | Enterprise Watson, no meeting bots |
+
+### Key Differentiators
+
+1. **Two-Course Path:** Start easy ($5!), go pro when ready
+2. **Meeting-Bot Specific:** Only courses focused on AI meeting assistants
+3. **Claude Code Focus:** Best AI coding tool, huge cost savings vs. Cursor
+4. **Real Cloud Deployments:** Not just demos - AWS, Azure, GCP with CI/CD
+5. **30 Years Experience:** Professional engineering rigor, not just tutorials
 
 ---
 
 ## About the Instructor
 
-**Kurt Niemi** brings 30 years of software development experience spanning:
+**Kurt Niemi** brings 30 years of software development experience:
 - Enterprise software architecture
 - Startup technical leadership
 - AI/ML integration projects
 - Teaching and mentoring developers
 
 His company **LLL Solutions** offers:
-- **Coaching:** Learn to build AI bots yourself with guided mentorship
+- **Coaching:** Learn to build AI bots with guided mentorship
 - **Done-For-You:** Have Kurt's team build your custom bot
+
+---
+
+## How to Enroll
+
+### Course 1: Build Your Bot with Lovable ($5 Launch Special)
+1. **Message "bot course"** to Kurt's Clone bot in any meeting
+2. **Connect with Kurt on LinkedIn** to claim your spot
+3. First 20 students only!
+
+### Course 2: Pro Deployment
+- Coming after Course 1 launch
+- Course 1 alumni get priority access + $50 off
 
 ---
 
 ## FAQ
 
-**Q: I've never written code. Can I really do this?**
-A: Yes! Professional vibe coding means the AI writes most of the code. You learn to direct it and understand what it creates.
+**Q: I've never written code. Can I do Course 1?**
+A: Absolutely! Course 1 requires zero coding. Lovable handles everything.
 
-**Q: What if I get stuck?**
-A: Live cohorts include Q&A sessions. Self-paced students have community access. VIP tier includes 1:1 support.
+**Q: Do I need Course 1 before Course 2?**
+A: Recommended but not required. Course 2 starts from scratch with local development.
 
-**Q: How much will the services cost to run my bot?**
-A: Expect ~$20-50/month for light usage (Recall.ai, Azure OpenAI, hosting). Heavy usage scales up.
+**Q: Why is Course 1 only $5?**
+A: Kurt wants everyone to experience building their first AI bot. It's a no-brainer entry point.
+
+**Q: Why Claude Code instead of Cursor?**
+A: Claude Code is more powerful and cost-effective. Kurt will explain why in Course 2.
+
+**Q: What are the ongoing costs to run my bot?**
+A: Course 1 (Lovable): ~$20-50/month. Course 2 (self-hosted): ~$5-20/month + API costs.
 
 **Q: Can I use this for my business?**
-A: Absolutely! Many students want bots for sales calls, customer meetings, or internal team meetings.
-
-**Q: Is the code open source?**
-A: Yes! The base code is at https://github.com/kurtn718/kurt-meeting-bot - this course teaches you how to customize and extend it.
+A: Yes! Many students want bots for sales calls, customer meetings, or internal team meetings.
 
 ---
 
