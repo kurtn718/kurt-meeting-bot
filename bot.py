@@ -326,18 +326,23 @@ def save_messages_to_file(bot_id, recording_id=None):
             'timestamp': timestamp.isoformat()
         }
 
-        # Check for social URLs
-        social_urls = extract_social_urls(message_text)
-        if social_urls:
-            msg_data['social_urls'] = [{'platform': platform, 'url': url} for platform, url in social_urls]
-            # Also add to master social profiles list
-            for platform, url in social_urls:
-                output['social_profiles'].append({
-                    'participant': participant_name,
-                    'platform': platform,
-                    'url': url,
-                    'from_message': message_text[:100]  # First 100 chars for context
-                })
+        # Mark bot responses
+        if participant_name == "@kurtbot":
+            msg_data['is_bot_response'] = True
+
+        # Check for social URLs (skip for bot responses)
+        if participant_name != "@kurtbot":
+            social_urls = extract_social_urls(message_text)
+            if social_urls:
+                msg_data['social_urls'] = [{'platform': platform, 'url': url} for platform, url in social_urls]
+                # Also add to master social profiles list
+                for platform, url in social_urls:
+                    output['social_profiles'].append({
+                        'participant': participant_name,
+                        'platform': platform,
+                        'url': url,
+                        'from_message': message_text[:100]  # First 100 chars for context
+                    })
 
         output['public_messages'].append(msg_data)
 
@@ -350,19 +355,25 @@ def save_messages_to_file(bot_id, recording_id=None):
             'timestamp': timestamp.isoformat()
         }
 
-        # Check for social URLs in DMs too
-        social_urls = extract_social_urls(message_text)
-        if social_urls:
-            msg_data['social_urls'] = [{'platform': platform, 'url': url} for platform, url in social_urls]
-            # Also add to master social profiles list
-            for platform, url in social_urls:
-                output['social_profiles'].append({
-                    'participant': participant_name,
-                    'platform': platform,
-                    'url': url,
-                    'from_message': message_text[:100],
-                    'from_dm': True
-                })
+        # Mark bot responses (participant_id shows who bot was responding to)
+        if participant_name == "@kurtbot":
+            msg_data['is_bot_response'] = True
+            msg_data['responding_to_participant_id'] = participant_id
+
+        # Check for social URLs in DMs (skip for bot responses)
+        if participant_name != "@kurtbot":
+            social_urls = extract_social_urls(message_text)
+            if social_urls:
+                msg_data['social_urls'] = [{'platform': platform, 'url': url} for platform, url in social_urls]
+                # Also add to master social profiles list
+                for platform, url in social_urls:
+                    output['social_profiles'].append({
+                        'participant': participant_name,
+                        'platform': platform,
+                        'url': url,
+                        'from_message': message_text[:100],
+                        'from_dm': True
+                    })
 
         output['direct_messages'].append(msg_data)
 
@@ -493,6 +504,10 @@ def handle_webhook():
                 send_chat_message(bot_id, participant_id, ai_response)
                 print(f"🤖 Sent fun response to {participant_name}")
 
+                # Log bot's response for conversation tracking
+                bot_timestamp = datetime.now()
+                all_messages[bot_id]['dms'].append(("@kurtbot", participant_id, ai_response, bot_timestamp))
+
             # Handle public chat mentions (including Kurt's LinkedIn URL)
             elif ('kurt' in message_text.lower() or
                   '@kurtbot' in message_text.lower() or
@@ -512,6 +527,11 @@ def handle_webhook():
 
                     send_chat_message(bot_id, "everyone", ai_response)
                     print(f"🤖 Sent contextual analysis response")
+
+                    # Log bot's response for conversation tracking
+                    from datetime import datetime
+                    bot_timestamp = datetime.now()
+                    all_messages[bot_id]['public'].append(("@kurtbot", ai_response, bot_timestamp))
                 else:
                     print(f"🎯 Processing playful mention from {participant_name}...")
 
@@ -521,6 +541,11 @@ def handle_webhook():
                     # Send response to everyone
                     send_chat_message(bot_id, "everyone", ai_response)
                     print(f"🤖 Sent playful response")
+
+                    # Log bot's response for conversation tracking
+                    from datetime import datetime
+                    bot_timestamp = datetime.now()
+                    all_messages[bot_id]['public'].append(("@kurtbot", ai_response, bot_timestamp))
 
         # Handle bot joining call
         elif event == 'bot.joining_call':
