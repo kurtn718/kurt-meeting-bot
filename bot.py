@@ -111,7 +111,7 @@ Remember: you're here to be entertaining, not to cause confusion or problems.
 
 def log_course_interest(participant_name, message_text, bot_id=None):
     """
-    Log when someone expresses interest in the Maven course
+    Log when someone expresses interest in the Maven course using LLM-based intent detection
 
     Args:
         participant_name: Name of the person expressing interest
@@ -121,28 +121,72 @@ def log_course_interest(participant_name, message_text, bot_id=None):
     import json
     from datetime import datetime
 
-    interest_keywords = [
-        'interested', 'sign me up', 'bot course', 'teach me',
-        'course', 'maven', 'want to learn', 'how do i', 'i want one'
-    ]
+    # Use LLM to detect interest instead of hardcoded keywords
+    try:
+        classification_prompt = f"""Analyze this message and determine if the person is expressing interest in:
+- Learning to build AI bots
+- Taking a course or training
+- Getting help building a bot
+- Learning AI-assisted coding
+- Maven courses
 
-    # Check if message contains interest keywords
-    message_lower = message_text.lower()
-    if any(keyword in message_lower for keyword in interest_keywords):
-        interest_entry = {
-            'timestamp': datetime.now().isoformat(),
-            'name': participant_name,
-            'message': message_text,
-            'bot_id': bot_id
-        }
+Message: "{message_text}"
 
-        # Append to interest log file
-        try:
-            with open('course_interest.json', 'a') as f:
-                f.write(json.dumps(interest_entry) + '\n')
-            print(f"✅ Logged course interest from {participant_name}")
-        except Exception as e:
-            print(f"⚠️ Could not log interest: {e}")
+Respond with ONLY "YES" if they're expressing interest, or "NO" if they're not.
+Examples:
+- "I'd love to learn how to build this!" → YES
+- "How much does the course cost?" → YES
+- "That's really cool!" → NO
+- "Can you help me build one?" → YES
+- "What time is it?" → NO"""
+
+        response = openai_client.chat.completions.create(
+            model=AZURE_OPENAI_DEPLOYMENT,
+            max_tokens=5,
+            temperature=0,  # Deterministic responses
+            messages=[
+                {"role": "system", "content": "You are a classifier. Respond with only YES or NO."},
+                {"role": "user", "content": classification_prompt}
+            ]
+        )
+
+        classification = response.choices[0].message.content.strip().upper()
+
+        if classification == "YES":
+            interest_entry = {
+                'timestamp': datetime.now().isoformat(),
+                'name': participant_name,
+                'message': message_text,
+                'bot_id': bot_id,
+                'detected_by': 'llm'
+            }
+
+            # Append to interest log file
+            try:
+                with open('course_interest.json', 'a') as f:
+                    f.write(json.dumps(interest_entry) + '\n')
+                print(f"✅ Logged course interest from {participant_name}")
+            except Exception as e:
+                print(f"⚠️ Could not log interest: {e}")
+
+    except Exception as e:
+        print(f"⚠️ Could not classify interest: {e}")
+        # Fallback to basic keyword check if LLM fails
+        interest_keywords = ['interested', 'course', 'teach', 'learn', 'bot', 'maven', 'i want']
+        if any(keyword in message_text.lower() for keyword in interest_keywords):
+            interest_entry = {
+                'timestamp': datetime.now().isoformat(),
+                'name': participant_name,
+                'message': message_text,
+                'bot_id': bot_id,
+                'detected_by': 'fallback_keywords'
+            }
+            try:
+                with open('course_interest.json', 'a') as f:
+                    f.write(json.dumps(interest_entry) + '\n')
+                print(f"✅ Logged course interest from {participant_name} (fallback)")
+            except Exception as e2:
+                print(f"⚠️ Could not log interest (fallback): {e2}")
 
 
 def detect_self_harm(message_text):
