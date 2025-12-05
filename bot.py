@@ -468,6 +468,13 @@ def handle_webhook():
 
             print(f"💬 {'[DM]' if is_dm else '[PUBLIC]'} Chat from {participant_name}: {message_text}")
 
+            # Skip messages from the bot itself to prevent response loops
+            # Check for various bot name formats
+            bot_names = ["@kurtbot", "kurtbot", "kurt's clone"]
+            if participant_name.lower() in bot_names:
+                print(f"⏭️ Skipping message from bot: {participant_name}")
+                return jsonify({"status": "skipped", "reason": "bot message"}), 200
+
             # Initialize message buffer for this bot if needed
             if bot_id and bot_id not in recent_messages:
                 recent_messages[bot_id] = []

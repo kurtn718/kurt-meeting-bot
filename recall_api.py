@@ -247,3 +247,81 @@ def get_bot_status(bot_id):
     else:
         print(f"❌ Error getting bot status: {response.status_code}")
         return None
+
+
+def list_bots():
+    """
+    List all bots
+
+    Returns:
+        list: List of bot data, or None if retrieval failed
+    """
+    headers = {
+        "Authorization": f"Token {RECALL_API_KEY}",
+        "Accept": "application/json"
+    }
+
+    response = requests.get(f"{BASE_URL}/bot/", headers=headers)
+
+    if response.status_code == 200:
+        return response.json()
+    else:
+        print(f"❌ Error listing bots: {response.status_code}")
+        print(response.text)
+        return None
+
+
+def remove_bot(bot_id):
+    """
+    Remove a bot from the meeting (makes the bot leave)
+
+    Args:
+        bot_id: The bot's UUID
+
+    Returns:
+        bool: True if removal succeeded, False otherwise
+    """
+    headers = {
+        "Authorization": f"Token {RECALL_API_KEY}",
+        "Accept": "application/json"
+    }
+
+    response = requests.delete(f"{BASE_URL}/bot/{bot_id}/", headers=headers)
+
+    if response.status_code == 204:
+        print(f"✅ Bot {bot_id} removed successfully")
+        return True
+    else:
+        print(f"❌ Error removing bot: {response.status_code}")
+        print(response.text)
+        return False
+
+
+def leave_meeting(bot_id):
+    """
+    Make a bot leave the meeting it's currently in
+
+    Args:
+        bot_id: The bot's UUID
+
+    Returns:
+        bool: True if leave command succeeded, False otherwise
+    """
+    headers = {
+        "Authorization": f"Token {RECALL_API_KEY}",
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+    }
+
+    response = requests.post(
+        f"{BASE_URL}/bot/{bot_id}/leave_call/",
+        headers=headers
+    )
+
+    if response.status_code == 200:
+        print(f"✅ Bot {bot_id} is leaving the meeting")
+        return True
+    else:
+        print(f"❌ Error making bot leave: {response.status_code}")
+        print(response.text)
+        return False
