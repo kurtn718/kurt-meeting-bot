@@ -19,6 +19,7 @@ AZURE_OPENAI_ENDPOINT = os.getenv("AZURE_OPENAI_ENDPOINT", "https://your-resourc
 AZURE_OPENAI_DEPLOYMENT = os.getenv("AZURE_OPENAI_DEPLOYMENT", "gpt-4")
 AZURE_OPENAI_API_VERSION = os.getenv("AZURE_OPENAI_API_VERSION", "2024-08-01-preview")
 KURT_LINKEDIN_URL = os.getenv("KURT_LINKEDIN_URL", "https://linkedin.com/in/kurtniemi")
+SUMMARY_LINK = os.getenv("SUMMARY_LINK", "")
 
 app = Flask(__name__)
 
@@ -90,20 +91,102 @@ Commands you understand:
   to learn to build it yourself, or done-for-you services if you'd rather have the pros handle it.
   There's also a Maven course launching soon - ask me 'bot course' for details!
   DM the real Kurt or me (@kurtbot) right here in this meeting to chat!"
-- "bot course" / "teach me" / "is there a course" -
-  Say: "Kurt is launching Maven courses on building AI meeting bots using professional vibe coding
-  (backed by 30 years of software dev experience)!
+- "bot course" / "teach me" / "is there a course" / "I'm interested" / "sign me up" -
+  Say: "Kurt is launching Maven courses on building AI meeting bots! He teaches how software engineers
+  use AI-assisted coding (what we call 'professional vibe coding') - backed by 30 years of dev experience.
 
-  Course 1: Build Your Bot with Lovable - Complete app deployment with zero DevOps!
-  SPECIAL DEAL: Just $5 for the first 20 students!
+  Two tracks planned:
+  • Beginner: Build & deploy with Lovable (no DevOps required!)
+  • Advanced: Claude Code workflow + AWS/Azure/GCP deployment with CI/CD
 
-  Course 2: Pro Deployment - Local dev with Claude Code + deploy to AWS/Azure/GCP/Digital Ocean with CI/CD.
-
-  DM the real Kurt or me (@kurtbot) right here to grab the early bird deal!"
+  Interested? DM the real Kurt or me (@kurtbot) right here and I'll make sure he follows up with you!"
+- "summary" / "detailed summary" / "link" / "get link" / "send link" / "share summary" -
+  Respond with: "Here's the detailed summary from yesterday's session: SUMMARY_LINK_PLACEHOLDER"
+  (The SUMMARY_LINK_PLACEHOLDER will be automatically replaced with the actual link)
 
 Stay professional, avoid controversial topics, and keep it light and fun!
 Remember: you're here to be entertaining, not to cause confusion or problems.
 """
+
+
+def log_course_interest(participant_name, message_text, bot_id=None):
+    """
+    Log when someone expresses interest in the Maven course using LLM-based intent detection
+
+    Args:
+        participant_name: Name of the person expressing interest
+        message_text: The message they sent
+        bot_id: Optional bot ID for context
+    """
+    import json
+    from datetime import datetime
+
+    # Use LLM to detect interest instead of hardcoded keywords
+    try:
+        classification_prompt = f"""Analyze this message and determine if the person is expressing interest in:
+- Learning to build AI bots
+- Taking a course or training
+- Getting help building a bot
+- Learning AI-assisted coding
+- Maven courses
+
+Message: "{message_text}"
+
+Respond with ONLY "YES" if they're expressing interest, or "NO" if they're not.
+Examples:
+- "I'd love to learn how to build this!" → YES
+- "How much does the course cost?" → YES
+- "That's really cool!" → NO
+- "Can you help me build one?" → YES
+- "What time is it?" → NO"""
+
+        response = openai_client.chat.completions.create(
+            model=AZURE_OPENAI_DEPLOYMENT,
+            max_tokens=5,
+            temperature=0,  # Deterministic responses
+            messages=[
+                {"role": "system", "content": "You are a classifier. Respond with only YES or NO."},
+                {"role": "user", "content": classification_prompt}
+            ]
+        )
+
+        classification = response.choices[0].message.content.strip().upper()
+
+        if classification == "YES":
+            interest_entry = {
+                'timestamp': datetime.now().isoformat(),
+                'name': participant_name,
+                'message': message_text,
+                'bot_id': bot_id,
+                'detected_by': 'llm'
+            }
+
+            # Append to interest log file
+            try:
+                with open('course_interest.json', 'a') as f:
+                    f.write(json.dumps(interest_entry) + '\n')
+                print(f"✅ Logged course interest from {participant_name}")
+            except Exception as e:
+                print(f"⚠️ Could not log interest: {e}")
+
+    except Exception as e:
+        print(f"⚠️ Could not classify interest: {e}")
+        # Fallback to basic keyword check if LLM fails
+        interest_keywords = ['interested', 'course', 'teach', 'learn', 'bot', 'maven', 'i want']
+        if any(keyword in message_text.lower() for keyword in interest_keywords):
+            interest_entry = {
+                'timestamp': datetime.now().isoformat(),
+                'name': participant_name,
+                'message': message_text,
+                'bot_id': bot_id,
+                'detected_by': 'fallback_keywords'
+            }
+            try:
+                with open('course_interest.json', 'a') as f:
+                    f.write(json.dumps(interest_entry) + '\n')
+                print(f"✅ Logged course interest from {participant_name} (fallback)")
+            except Exception as e2:
+                print(f"⚠️ Could not log interest (fallback): {e2}")
 
 
 def detect_self_harm(message_text):
@@ -154,6 +237,9 @@ def moderate_and_respond(user_message, user_name="Kurt", is_contextual=False, co
         print(f"⚠️ SAFETY: Self-harm content detected from {user_name}")
         return ("Kurt and @kurtbot want you to know: please talk to family, friends, or a mental health counselor about what you're going through. Things will get better - life is worth living. If you need emergency help right now, please reach out to crisis services. 💙")
 
+    # Log course interest for lead generation
+    log_course_interest(user_name, user_message)
+
     # Content passed initial check - generate response
     # Azure OpenAI's content filter will handle racist/offensive/harmful content
     if is_contextual and context_messages:
@@ -182,7 +268,13 @@ def get_llm_response(user_message, user_name="Kurt"):
                 {"role": "user", "content": f"{user_name} says: {user_message}"}
             ]
         )
-        return response.choices[0].message.content
+        response_text = response.choices[0].message.content
+
+        # Replace the summary link placeholder with the actual link
+        if SUMMARY_LINK and "SUMMARY_LINK_PLACEHOLDER" in response_text:
+            response_text = response_text.replace("SUMMARY_LINK_PLACEHOLDER", SUMMARY_LINK)
+
+        return response_text
 
     except Exception as e:
         error_str = str(e).lower()
@@ -239,7 +331,13 @@ Provide a thoughtful, contextual response:"""
                 {"role": "system", "content": contextual_prompt}
             ]
         )
-        return response.choices[0].message.content
+        response_text = response.choices[0].message.content
+
+        # Replace the summary link placeholder with the actual link
+        if SUMMARY_LINK and "SUMMARY_LINK_PLACEHOLDER" in response_text:
+            response_text = response_text.replace("SUMMARY_LINK_PLACEHOLDER", SUMMARY_LINK)
+
+        return response_text
 
     except Exception as e:
         error_str = str(e).lower()

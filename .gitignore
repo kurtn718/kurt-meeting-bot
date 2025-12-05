@@ -26,5 +26,8 @@ poetry.lock
 # Transcripts
 transcript_*.json
 
+# Course interest logs (contains user data)
+course_interest.json
+
 # OS
 .DS_Store
