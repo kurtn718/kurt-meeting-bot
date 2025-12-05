@@ -91,16 +91,15 @@ Commands you understand:
   to learn to build it yourself, or done-for-you services if you'd rather have the pros handle it.
   There's also a Maven course launching soon - ask me 'bot course' for details!
   DM the real Kurt or me (@kurtbot) right here in this meeting to chat!"
-- "bot course" / "teach me" / "is there a course" -
-  Say: "Kurt is launching Maven courses on building AI meeting bots using professional vibe coding
-  (backed by 30 years of software dev experience)!
+- "bot course" / "teach me" / "is there a course" / "I'm interested" / "sign me up" -
+  Say: "Kurt is launching Maven courses on building AI meeting bots! He teaches how software engineers
+  use AI-assisted coding (what we call 'professional vibe coding') - backed by 30 years of dev experience.
 
-  Course 1: Build Your Bot with Lovable - Complete app deployment with zero DevOps!
-  SPECIAL DEAL: Just $5 for the first 20 students!
+  Two tracks planned:
+  • Beginner: Build & deploy with Lovable (no DevOps required!)
+  • Advanced: Claude Code workflow + AWS/Azure/GCP deployment with CI/CD
 
-  Course 2: Pro Deployment - Local dev with Claude Code + deploy to AWS/Azure/GCP/Digital Ocean with CI/CD.
-
-  DM the real Kurt or me (@kurtbot) right here to grab the early bird deal!"
+  Interested? DM the real Kurt or me (@kurtbot) right here and I'll make sure he follows up with you!"
 - "summary" / "detailed summary" / "link" / "get link" / "send link" / "share summary" -
   Respond with: "Here's the detailed summary from yesterday's session: SUMMARY_LINK_PLACEHOLDER"
   (The SUMMARY_LINK_PLACEHOLDER will be automatically replaced with the actual link)
@@ -108,6 +107,42 @@ Commands you understand:
 Stay professional, avoid controversial topics, and keep it light and fun!
 Remember: you're here to be entertaining, not to cause confusion or problems.
 """
+
+
+def log_course_interest(participant_name, message_text, bot_id=None):
+    """
+    Log when someone expresses interest in the Maven course
+
+    Args:
+        participant_name: Name of the person expressing interest
+        message_text: The message they sent
+        bot_id: Optional bot ID for context
+    """
+    import json
+    from datetime import datetime
+
+    interest_keywords = [
+        'interested', 'sign me up', 'bot course', 'teach me',
+        'course', 'maven', 'want to learn', 'how do i', 'i want one'
+    ]
+
+    # Check if message contains interest keywords
+    message_lower = message_text.lower()
+    if any(keyword in message_lower for keyword in interest_keywords):
+        interest_entry = {
+            'timestamp': datetime.now().isoformat(),
+            'name': participant_name,
+            'message': message_text,
+            'bot_id': bot_id
+        }
+
+        # Append to interest log file
+        try:
+            with open('course_interest.json', 'a') as f:
+                f.write(json.dumps(interest_entry) + '\n')
+            print(f"✅ Logged course interest from {participant_name}")
+        except Exception as e:
+            print(f"⚠️ Could not log interest: {e}")
 
 
 def detect_self_harm(message_text):
@@ -157,6 +192,9 @@ def moderate_and_respond(user_message, user_name="Kurt", is_contextual=False, co
     if detect_self_harm(user_message):
         print(f"⚠️ SAFETY: Self-harm content detected from {user_name}")
         return ("Kurt and @kurtbot want you to know: please talk to family, friends, or a mental health counselor about what you're going through. Things will get better - life is worth living. If you need emergency help right now, please reach out to crisis services. 💙")
+
+    # Log course interest for lead generation
+    log_course_interest(user_name, user_message)
 
     # Content passed initial check - generate response
     # Azure OpenAI's content filter will handle racist/offensive/harmful content
