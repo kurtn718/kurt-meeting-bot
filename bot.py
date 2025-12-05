@@ -19,6 +19,7 @@ AZURE_OPENAI_ENDPOINT = os.getenv("AZURE_OPENAI_ENDPOINT", "https://your-resourc
 AZURE_OPENAI_DEPLOYMENT = os.getenv("AZURE_OPENAI_DEPLOYMENT", "gpt-4")
 AZURE_OPENAI_API_VERSION = os.getenv("AZURE_OPENAI_API_VERSION", "2024-08-01-preview")
 KURT_LINKEDIN_URL = os.getenv("KURT_LINKEDIN_URL", "https://linkedin.com/in/kurtniemi")
+SUMMARY_LINK = os.getenv("SUMMARY_LINK", "")
 
 app = Flask(__name__)
 
@@ -100,6 +101,9 @@ Commands you understand:
   Course 2: Pro Deployment - Local dev with Claude Code + deploy to AWS/Azure/GCP/Digital Ocean with CI/CD.
 
   DM the real Kurt or me (@kurtbot) right here to grab the early bird deal!"
+- "summary" / "detailed summary" / "link" / "get link" / "send link" / "share summary" -
+  Respond with: "Here's the detailed summary from yesterday's session: SUMMARY_LINK_PLACEHOLDER"
+  (The SUMMARY_LINK_PLACEHOLDER will be automatically replaced with the actual link)
 
 Stay professional, avoid controversial topics, and keep it light and fun!
 Remember: you're here to be entertaining, not to cause confusion or problems.
@@ -182,7 +186,13 @@ def get_llm_response(user_message, user_name="Kurt"):
                 {"role": "user", "content": f"{user_name} says: {user_message}"}
             ]
         )
-        return response.choices[0].message.content
+        response_text = response.choices[0].message.content
+
+        # Replace the summary link placeholder with the actual link
+        if SUMMARY_LINK and "SUMMARY_LINK_PLACEHOLDER" in response_text:
+            response_text = response_text.replace("SUMMARY_LINK_PLACEHOLDER", SUMMARY_LINK)
+
+        return response_text
 
     except Exception as e:
         error_str = str(e).lower()
@@ -239,7 +249,13 @@ Provide a thoughtful, contextual response:"""
                 {"role": "system", "content": contextual_prompt}
             ]
         )
-        return response.choices[0].message.content
+        response_text = response.choices[0].message.content
+
+        # Replace the summary link placeholder with the actual link
+        if SUMMARY_LINK and "SUMMARY_LINK_PLACEHOLDER" in response_text:
+            response_text = response_text.replace("SUMMARY_LINK_PLACEHOLDER", SUMMARY_LINK)
+
+        return response_text
 
     except Exception as e:
         error_str = str(e).lower()

@@ -45,7 +45,7 @@ def create_bot_with_realtime_and_chat(meeting_url, webhook_url):
         "chat": {
             "on_bot_joined": {
                 "send_to": "everyone",
-                "message": "👋 Kurt's Clone here! I'm the upgraded version. Mention 'Kurt' or '@kurtbot' in chat to talk to me, or DM me anytime! Ask me 'how were you created?' to learn my origin story. 😎"
+                "message": "Hi everyone! Kurt apologizes for missing tonight's class, but he asked me to share the processed results from my attendance yesterday. DM me or ask in chat for a link to the detailed summary."
             }
         },
         "recording_config": {
